@@ -1,0 +1,53 @@
+# IDE - Android Studio
+.idea/
+*.iml
+*.iws
+*.ipr
+.gradle/
+*.jks
+*.keystore
+
+# Build
+build/
+.cxx/
+.externalNativeBuild/
+
+# Gradle
+.gradle
+local.properties
+
+# Logs
+*.log
+logs/
+
+# Captures
+captures/
+.externalNativeBuild
+
+# Environment
+.env
+.env.local
+*.key
+*.pem
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+
+# Node (si aplica)
+node_modules/
+npm-debug.log
+
+# Misc
+*.swp
+*.swo
+*~
+.classpath
+.project
+.settings/
+.AppleDouble
+.AppleDB
