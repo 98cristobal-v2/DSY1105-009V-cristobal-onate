@@ -1,1 +1,3 @@
-![Uploading Captura de pantalla 2026-09-14 202748.png…]()
+# Evidencias
+
+Se subieron los archivos de evidencia del proyecto en esta carpeta.
