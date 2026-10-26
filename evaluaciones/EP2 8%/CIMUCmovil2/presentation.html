@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CIM UC Móvil - Presentación del Proyecto</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        code, pre { font-family: 'Fira Code', monospace; }
+        .slide { display: none; }
+        .slide.active { display: flex; }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 h-screen flex flex-col justify-between overflow-hidden">
+
+    <!-- Top Bar -->
+    <header class="bg-slate-900 border-b border-slate-800 px-6 py-4 flex justify-between items-center shadow-lg">
+        <div class="flex items-center space-x-3">
+            <span class="bg-indigo-600 text-white text-xs font-bold px-3 py-1 rounded-full">Duoc UC</span>
+            <h1 class="text-sm font-semibold text-slate-300">Desarrollo de Aplicaciones Móviles • Evaluación Parcial 2</h1>
+        </div>
+        <div class="slide-counter text-xs font-medium text-slate-400">Diapositiva 1 de 9</div>
+    </header>
+
+    <!-- Main Slide Container -->
+    <main class="flex-1 flex items-center justify-center p-8 relative overflow-y-auto">
+
+        <!-- Slide 1: Portada -->
+        <div class="slide active flex-col items-center text-center max-w-4xl space-y-6">
+            <div class="bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 px-4 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wider">
+                Centro de Innovación en Madera (CIM UC)
+            </div>
+            <h1 class="text-5xl font-extrabold tracking-tight text-white leading-tight">
+                CIM UC Móvil
+            </h1>
+            <p class="text-lg text-slate-400 max-w-2xl">
+                Aplicación Android nativa desarrollada para la gestión de proyectos, I+D y transferencia tecnológica en construcción sustentable.
+            </p>
+            <div class="pt-4 flex flex-col sm:flex-row justify-center gap-4 text-sm text-slate-300">
+                <div class="bg-slate-900 px-5 py-3 rounded-xl border border-slate-800">
+                    <span class="text-indigo-400 font-semibold">Integrantes:</span> Cristóbal Oñate & Ricardo Almarza
+                </div>
+                <div class="bg-slate-900 px-5 py-3 rounded-xl border border-slate-800">
+                    <span class="text-indigo-400 font-semibold">Stack:</span> Kotlin • Jetpack Compose • Room • MVVM
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 2: El Proyecto y el Problema -->
+        <div class="slide flex-col max-w-4xl space-y-6">
+            <h2 class="text-3xl font-bold text-indigo-400">1. ¿Qué construimos y por qué?</h2>
+            <p class="text-slate-300 text-base leading-relaxed">
+                Diseñamos y desarrollamos <strong class="text-white">CIM UC Móvil</strong>, una app móvil enfocada en resolver la necesidad de difusión y vinculación del Centro de Innovación en Madera. La app permite consultar proyectos en madera masiva (CLT), laboratorios de ensayos, investigadores y publicaciones de forma rápida y sin depender de conexión constante a internet.
+            </p>
+            <div class="grid grid-cols-2 gap-4 pt-2">
+                <div class="bg-slate-900 p-5 rounded-xl border border-slate-800 space-y-2">
+                    <h3 class="font-semibold text-white text-lg">💡 Enfoque Práctico</h3>
+                    <p class="text-slate-400 text-xs leading-relaxed">Una interfaz limpia inspirada en Material 3, pensada para que académicos, estudiantes y profesionales de la construcción accedan a información técnica clave al instante.</p>
+                </div>
+                <div class="bg-slate-900 p-5 rounded-xl border border-slate-800 space-y-2">
+                    <h3 class="font-semibold text-white text-lg">⚙️ Arquitectura Robusta</h3>
+                    <p class="text-slate-400 text-xs leading-relaxed">Implementamos buenas prácticas de desarrollo nativo Android: separación de capas, persistencia local y programación reactiva.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: Arquitectura MVVM -->
+        <div class="slide flex-col max-w-4xl space-y-6">
+            <h2 class="text-3xl font-bold text-indigo-400">2. Estructura y Arquitectura (MVVM)</h2>
+            <p class="text-slate-300 text-sm">
+                Organizamos el código modularmente para mantener responsabilidades claras y facilitar la escalabilidad:
+            </p>
+            <div class="grid grid-cols-4 gap-3">
+                <div class="bg-slate-900 p-4 rounded-xl border border-slate-800 text-center">
+                    <div class="text-2xl mb-1">📦</div>
+                    <h4 class="font-bold text-white text-sm mb-1">model</h4>
+                    <p class="text-[11px] text-slate-400">Clases de datos (<code class="text-indigo-300">CimContent</code>) y enums de categorías.</p>
+                </div>
+                <div class="bg-slate-900 p-4 rounded-xl border border-slate-800 text-center">
+                    <div class="text-2xl mb-1">🗄️</div>
+                    <h4 class="font-bold text-white text-sm mb-1">data</h4>
+                    <p class="text-[11px] text-slate-400">Entidades Room, DAOs, Base de datos y Repositorio.</p>
+                </div>
+                <div class="bg-slate-900 p-4 rounded-xl border border-slate-800 text-center">
+                    <div class="text-2xl mb-1">⚡</div>
+                    <h4 class="font-bold text-white text-sm mb-1">viewmodel</h4>
+                    <p class="text-[11px] text-slate-400">Lógica de negocio y manejo de estado (<code class="text-indigo-300">StateFlow</code>).</p>
+                </div>
+                <div class="bg-slate-900 p-4 rounded-xl border border-slate-800 text-center">
+                    <div class="text-2xl mb-1">🎨</div>
+                    <h4 class="font-bold text-white text-sm mb-1">ui</h4>
+                    <p class="text-[11px] text-slate-400">Pantallas en Jetpack Compose (Listas, Detalles, Formularios).</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: Base de Datos Local con Room -->
+        <div class="slide flex-col max-w-4xl space-y-5">
+            <h2 class="text-3xl font-bold text-indigo-400">3. Persistencia Local con Room (SQLite)</h2>
+            <p class="text-slate-300 text-sm">
+                Para guardar los registros localmente, utilizamos Room con una entidad mapeada y un callback que precarga datos iniciales automáticamente:
+            </p>
+            <div class="bg-slate-900 p-4 rounded-xl border border-slate-800 overflow-x-auto">
+                <pre class="text-xs text-indigo-300"><code>@Entity(tableName = "cim_contents")
+data class CimEntity(
+    @PrimaryKey val id: String,
+    val type: String,
+    val title: String,
+    val shortDescription: String,
+    val areaTematica: String,
+    val year: String? = null,
+    val status: String? = null
+) {
+    fun toDomain(): CimContent { ... }
+}</code></pre>
+            </div>
+            <p class="text-slate-400 text-xs">El repositorio expone un <code class="text-indigo-300">Flow&lt;List&lt;CimContent&gt;&gt;</code> que actualiza la UI de forma automática ante cualquier cambio en la base de datos.</p>
+        </div>
+
+        <!-- Slide 5: ViewModel y StateFlow -->
+        <div class="slide flex-col max-w-4xl space-y-5">
+            <h2 class="text-3xl font-bold text-indigo-400">4. Gestión de Estado con ViewModel</h2>
+            <p class="text-slate-300 text-sm">
+                Centralizamos los eventos de búsqueda, filtrado y CRUD en <code class="text-indigo-300">CimViewModel</code>, aislando completamente la UI de la lógica de datos:
+            </p>
+            <div class="bg-slate-900 p-4 rounded-xl border border-slate-800 overflow-x-auto">
+                <pre class="text-xs text-indigo-300"><code>class CimViewModel(application: Application) : AndroidViewModel(application) {
+    private val _uiState = MutableStateFlow(CimUiState())
+    val uiState: StateFlow&lt;CimUiState&gt; = _uiState.asStateFlow()
+
+    fun saveContent(title: String, description: String, ...) {
+        if (title.isBlank()) {
+            _uiState.update { it.copy(titleError = "El título es obligatorio") }
+            return
+        }
+        viewModelScope.launch { repository.insert(newContent) }
+    }
+}</code></pre>
+            </div>
+        </div>
+
+        <!-- Slide 6: Formularios Validados y CRUD -->
+        <div class="slide flex-col max-w-4xl space-y-5">
+            <h2 class="text-3xl font-bold text-indigo-400">5. Formularios Validados y Operaciones CRUD</h2>
+            <div class="grid grid-cols-2 gap-4">
+                <div class="bg-slate-900 p-5 rounded-xl border border-slate-800 space-y-2">
+                    <h3 class="font-bold text-white text-base">📝 Validación en Tiempo Real</h3>
+                    <p class="text-slate-400 text-xs leading-relaxed">
+                        El formulario verifica que campos como el título o la descripción no estén vacíos. Si hay un error, actualiza el estado y muestra un mensaje visual rojo debajo del campo correspondiente antes de permitir guardar en Room.
+                    </p>
+                </div>
+                <div class="bg-slate-900 p-5 rounded-xl border border-slate-800 space-y-2">
+                    <h3 class="font-bold text-base text-white">🔄 CRUD Completo</h3>
+                    <p class="text-slate-400 text-xs leading-relaxed">
+                        El usuario puede <strong class="text-indigo-400">Listar</strong> (con buscador instantáneo), <strong class="text-indigo-400">Registrar</strong> nuevas iniciativas mediante el FAB (+), <strong class="text-indigo-400">Editar</strong> fichas existentes y <strong class="text-indigo-400">Eliminar</strong> registros con diálogo de confirmación.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 7: Recursos Nativos -->
+        <div class="slide flex-col max-w-4xl space-y-5">
+            <h2 class="text-3xl font-bold text-indigo-400">6. Integración de Recursos Nativos</h2>
+            <p class="text-slate-300 text-sm">
+                Aprovechamos las capacidades del dispositivo mediante intents y contratos de Android:
+            </p>
+            <div class="grid grid-cols-2 gap-4">
+                <div class="bg-slate-900 p-5 rounded-xl border border-slate-800 space-y-2">
+                    <span class="text-2xl">📷</span>
+                    <h3 class="font-bold text-white text-base">Cámara del Dispositivo</h3>
+                    <p class="text-slate-400 text-xs">Implementado con <code class="text-indigo-300">ActivityResultContracts.TakePicturePreview()</code> para capturar fotos institucionales desde la app.</p>
+                </div>
+                <div class="bg-slate-900 p-5 rounded-xl border border-slate-800 space-y-2">
+                    <span class="text-2xl">📤</span>
+                    <h3 class="font-bold text-base text-white">Share Intent (Compartir)</h3>
+                    <p class="text-slate-400 text-xs">Uso de <code class="text-indigo-300">Intent.ACTION_SEND</code> para enviar la información de cualquier proyecto o publicación a WhatsApp u otras apps.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 8: UI y Animaciones con Compose -->
+        <div class="slide flex-col max-w-4xl space-y-5">
+            <h2 class="text-3xl font-bold text-indigo-400">7. UI en Jetpack Compose y Animaciones</h2>
+            <p class="text-slate-300 text-sm">
+                Construimos la interfaz de forma declarativa con Material 3 y transiciones fluidas:
+            </p>
+            <div class="bg-slate-900 p-4 rounded-xl border border-slate-800 overflow-x-auto">
+                <pre class="text-xs text-indigo-300"><code>AnimatedContent(
+    targetState = Triple(isEditing, selectedId, editingContent),
+    transitionSpec = {
+        fadeIn() + slideInHorizontally { it / 2 } togetherWith
+        fadeOut() + slideOutHorizontally { -it / 2 }
+    },
+    label = "NavigationTransition"
+) { ... }</code></pre>
+            </div>
+            <p class="text-slate-400 text-xs">Esto aporta una experiencia de navegación moderna, limpia y con feedback visual instantáneo para el usuario.</p>
+        </div>
+
+        <!-- Slide 9: Conclusión -->
+        <div class="slide flex-col items-center text-center max-w-4xl space-y-6">
+            <div class="text-4xl">📱</div>
+            <h2 class="text-4xl font-extrabold text-white">Demostración de la Aplicación</h2>
+            <p class="text-lg text-slate-300 max-w-xl">
+                A continuación pasaremos a mostrar el funcionamiento de la aplicación directamente en el dispositivo móvil.
+            </p>
+            <div class="bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 px-6 py-3 rounded-xl font-semibold text-sm">
+                ¿Tienen alguna pregunta sobre el código o la implementación?
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer Controls -->
+    <footer class="bg-slate-900 border-t border-slate-800 px-6 py-4 flex justify-between items-center shadow-lg">
+        <button onclick="prevSlide()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-5 py-2 rounded-lg font-medium text-sm transition cursor-pointer">
+            ← Anterior
+        </button>
+        <div class="slide-counter text-xs text-slate-400">Diapositiva 1 de 9</div>
+        <button onclick="nextSlide()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-5 py-2 rounded-lg font-medium text-sm transition cursor-pointer">
+            Siguiente →
+        </button>
+    </footer>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const counters = document.querySelectorAll('.slide-counter');
+
+        function showSlide(index) {
+            slides.forEach((slide, i) => {
+                slide.classList.remove('active');
+                if (i === index) slide.classList.add('active');
+            });
+            counters.forEach(c => {
+                c.textContent = `Diapositiva ${index + 1} de ${slides.length}`;
+            });
+        }
+
+        function nextSlide() {
+            if (currentSlide < slides.length - 1) {
+                currentSlide++;
+                showSlide(currentSlide);
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 0) {
+                currentSlide--;
+                showSlide(currentSlide);
+            }
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') nextSlide();
+            if (e.key === 'ArrowLeft') prevSlide();
+            if (e.key === ' ') nextSlide();
+        });
+    </script>
+</body>
+</html>
