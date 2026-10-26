@@ -58,8 +58,8 @@ app/src/main/java/com/cimuc/app/
 
 1. **Clonar el repositorio:**
    ```bash
-   git clone <https://github.com/98cristobal-v2/DSY1105-009V-cristobal-onate>
-   cd <CIMUCmovil2>
+   git clone https://github.com/98cristobal-v2/DSY1105-009V-cristobal-onate.git
+   cd DSY1105-009V-cristobal-onate/evaluaciones/"EP2 8%"/CIMUCmovil2
    ```
 
 2. **Abrir en Android Studio:**
