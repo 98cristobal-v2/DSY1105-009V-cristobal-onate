@@ -1,7 +1,6 @@
 package cl.duoc.cimucmovil.ui
 
 import android.content.Intent
-import android.provider.MediaStore
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -26,6 +25,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import cl.duoc.cimucmovil.model.CimContent
 import cl.duoc.cimucmovil.model.ContentType
+import cl.duoc.cimucmovil.ui.admin.UserManagerDialog
+import cl.duoc.cimucmovil.ui.auth.LoginScreen
+import cl.duoc.cimucmovil.ui.auth.RegisterScreen
 import cl.duoc.cimucmovil.viewmodel.CimViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -33,6 +35,42 @@ import cl.duoc.cimucmovil.viewmodel.CimViewModel
 fun CimApp(viewModel: CimViewModel = androidx.lifecycle.viewmodel.compose.viewModel()) {
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
+
+    // Si no hay usuario en sesión, mostrar pantallas de Login o Registro
+    if (uiState.currentUser == null) {
+        if (uiState.isRegisterMode) {
+            RegisterScreen(
+                errorMessage = uiState.registerError,
+                onRegister = { name, username, pass, confirmPass ->
+                    viewModel.register(name, username, pass, confirmPass)
+                },
+                onNavigateToLogin = { viewModel.setRegisterMode(false) }
+            )
+        } else {
+            LoginScreen(
+                errorMessage = uiState.loginError,
+                onLogin = { u, p -> viewModel.login(u, p) },
+                onNavigateToRegister = { viewModel.setRegisterMode(true) }
+            )
+        }
+        return
+    }
+
+    // Modal de administración de usuarios para el Admin (CRUD completo)
+    if (uiState.isManagingUsers && uiState.currentUser!!.isAdmin) {
+        UserManagerDialog(
+            users = uiState.allUsers,
+            currentAdmin = uiState.currentUser!!,
+            onCreateUser = { name, username, pass, role, onResult ->
+                viewModel.createUserByAdmin(name, username, pass, role, onResult)
+            },
+            onUpdateUser = { id, name, role, newPass, onResult ->
+                viewModel.updateUserByAdmin(id, name, role, newPass, onResult)
+            },
+            onDeleteUser = { userId -> viewModel.deleteUser(userId) },
+            onDismiss = { viewModel.setManagingUsers(false) }
+        )
+    }
 
     val cameraLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.TakePicturePreview()
@@ -55,7 +93,22 @@ fun CimApp(viewModel: CimViewModel = androidx.lifecycle.viewmodel.compose.viewMo
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("CIM UC - Innovación en Madera", fontWeight = FontWeight.Bold) },
+                title = {
+                    Column {
+                        Text(
+                            text = "CIM UC - Innovación en Madera",
+                            fontWeight = FontWeight.Bold,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            style = MaterialTheme.typography.titleMedium
+                        )
+                        Text(
+                            text = "👤 ${uiState.currentUser!!.name} (${if (uiState.currentUser!!.isAdmin) "Admin" else "Usuario"})",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.85f)
+                        )
+                    }
+                },
                 navigationIcon = {
                     if (uiState.selectedContentId != null || uiState.isEditingOrCreating) {
                         IconButton(onClick = {
@@ -66,6 +119,16 @@ fun CimApp(viewModel: CimViewModel = androidx.lifecycle.viewmodel.compose.viewMo
                         }
                     }
                 },
+                actions = {
+                    if (uiState.currentUser!!.isAdmin) {
+                        IconButton(onClick = { viewModel.setManagingUsers(true) }) {
+                            Text("👥", style = MaterialTheme.typography.titleMedium)
+                        }
+                    }
+                    IconButton(onClick = { viewModel.logout() }) {
+                        Text("🚪", style = MaterialTheme.typography.titleMedium)
+                    }
+                },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
                     titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
@@ -73,7 +136,8 @@ fun CimApp(viewModel: CimViewModel = androidx.lifecycle.viewmodel.compose.viewMo
             )
         },
         floatingActionButton = {
-            if (!uiState.isEditingOrCreating && uiState.selectedContentId == null) {
+            // Solo el administrador puede añadir nuevas iniciativas
+            if (!uiState.isEditingOrCreating && uiState.selectedContentId == null && uiState.currentUser!!.isAdmin) {
                 FloatingActionButton(
                     onClick = { viewModel.startCreating() },
                     containerColor = MaterialTheme.colorScheme.primary
@@ -130,6 +194,7 @@ fun CimApp(viewModel: CimViewModel = androidx.lifecycle.viewmodel.compose.viewMo
                             CimDetailScreen(
                                 content = selectedItem,
                                 allContents = uiState.contents,
+                                isAdmin = uiState.currentUser!!.isAdmin,
                                 onSelectItem = { id -> viewModel.onContentSelect(id) },
                                 onEdit = { viewModel.startEditing(selectedItem) },
                                 onDelete = { viewModel.deleteContent(selectedItem.id) },
@@ -416,6 +481,7 @@ fun CimFormScreen(
 fun CimDetailScreen(
     content: CimContent,
     allContents: List<CimContent>,
+    isAdmin: Boolean = false,
     onSelectItem: (String) -> Unit,
     onEdit: () -> Unit,
     onDelete: () -> Unit,
@@ -464,12 +530,15 @@ fun CimDetailScreen(
                 color = MaterialTheme.colorScheme.primary,
                 fontWeight = FontWeight.ExtraBold
             )
-            Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                IconButton(onClick = onEdit) {
-                    Text("✏️", style = MaterialTheme.typography.titleMedium)
-                }
-                IconButton(onClick = { showDeleteConfirm = true }) {
-                    Text("🗑️", style = MaterialTheme.typography.titleMedium)
+            // Solo los administradores pueden ver los botones de editar y eliminar
+            if (isAdmin) {
+                Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                    IconButton(onClick = onEdit) {
+                        Text("✏️", style = MaterialTheme.typography.titleMedium)
+                    }
+                    IconButton(onClick = { showDeleteConfirm = true }) {
+                        Text("🗑️", style = MaterialTheme.typography.titleMedium)
+                    }
                 }
             }
         }
