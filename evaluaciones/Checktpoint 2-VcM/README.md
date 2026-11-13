@@ -1,99 +1,85 @@
-# Proyecto Android CIM UC - Entrega EP2
+# CIM UC Móvil - Innovación en Madera
 
-Aplicación móvil nativa desarrollada para **CIM UC** como parte de la entrega de la Evaluación Práctica 2 (EP2). La aplicación implementa arquitectura moderna de Android con **Kotlin**, **Jetpack Compose**, **Room Database** y el patrón de diseño **MVVM**.
-
----
-
-## 🚀 Características Principales
-
-* **Arquitectura MVVM & Clean Code:** Separación clara de responsabilidades con ViewModels, Repositorios y Fuentes de Datos Locales.
-* **UI Moderna con Jetpack Compose:** Interfaz declarativa, adaptable y configurada con temas y estilos personalizados (`UI/Theme`).
-* **Persistencia Local con Room:** Base de datos relacional local con precarga de datos iniciales (*seeded data*).
-* **Búsqueda y Filtrado:** Listados interactivos con capacidades de búsqueda en tiempo real y filtros dinámicos.
-* **Gestión de Datos (CRUD):** Flujos completos para crear, editar, visualizar en detalle y eliminar registros con validaciones de formulario.
-* **Integración con Hardware y Sistema:**
-  * **Cámara:** Vista previa e integración con la cámara del dispositivo.
-  * **Compartir:** Opción para compartir contenido usando Intent del sistema.
-* **Presentación EP2:** Incluye presentación HTML interactiva para el soporte de la entrega.
-* **Testing Base:** Configuración inicial de *stubs* para pruebas unitarias e instrumentadas.
+Aplicación móvil nativa Android desarrollada en **Kotlin** y **Jetpack Compose** para la gestión, difusión y vinculación del Centro de Innovación en Madera (CIM UC). Permite la consulta de proyectos de edificación sustentable, capacidades de I+D, investigadores y publicaciones técnicas, con persistencia local y soporte para control de accesos por roles.
 
 ---
 
-## 🛠️ Tecnologías Utilizadas
+## 👥 Integrantes del Equipo
+* **Cristóbal Oñate**
+* **Ricardo Almarza**
 
-* **Lenguaje:** [Kotlin](https://kotlinlang.org/)
-* **UI:** [Jetpack Compose](https://developer.android.com/jetpack/compose)
-* **Persistencia:** [Room Database](https://developer.android.com/training/data-storage/room)
-* **Arquitectura:** MVVM (Model-View-ViewModel) + StateFlow / LiveData
-* **Componentes de Android Jetpack:** ViewModel, Navigation Compose, Coroutines, Flow.
-* **Herramientas de construcción:** Gradle (Kotlin DSL / Groovy)
-
----
-
-## 📂 Estructura del Proyecto
-
-```text
-app/src/main/java/com/cimuc/app/
-├── data/
-│   ├── local/          # Room DB, DAOs y Entidades
-│   └── repository/     # Repositorio de datos
-├── ui/
-│   ├── components/     # Componentes reutilizables de UI
-│   ├── screens/        # Pantallas (List, Detail, Form, Camera)
-│   ├── theme/          # Colores, Tipografía y Temas
-│   └── viewmodel/      # ViewModels para la gestión de estado
-└── util/               # Funciones auxiliares e integraciones
-```
+**Asignatura:** Desarrollo de Aplicaciones Móviles (`DSY1105`)  
+**Institución:** Duoc UC  
+**Evaluación:** Evaluación Parcial 2 (8%)  
 
 ---
 
-## 🔧 Requisitos e Instalación
+## 🚀 Funcionalidades Principales
 
-### Requisitos previos
-* **Android Studio:** Jellyfish / Koala o superior recomendado.
-* **JDK:** Versión 17 o superior.
-* **SDK Mínimo:** Android 7.0 (API Nivel 24) o superior.
+1. **Autenticación y Control de Acceso por Roles (RBAC):**
+   * **Inicio de Sesión y Registro de Usuarios:** Formularios completos con validación en tiempo real y retroalimentación visual clara.
+   * **Rol Administrador (`ADMIN`):** Acceso total para crear (`+`), editar (`✏️`) y eliminar (`🗑️`) iniciativas, además de un panel dedicado para el **CRUD Completo de Gestión de Usuarios** registrados en el sistema (`👥`) donde puede crear nuevos administradores o usuarios, modificar sus datos/roles/contraseñas y eliminarlos.
+   * **Rol Usuario Común (`USER`):** Perfil de solo lectura e interacción. Puede explorar el catálogo, buscar, filtrar por áreas temáticas y acceder a los recursos del dispositivo sin alterar la base de datos.
+   * **Cerrar Sesión:** Botón accesible en la barra superior (`🚪`) para alternar cuentas en cualquier momento.
 
-### Pasos para ejecutar el proyecto
+2. **Catálogo de Iniciativas CIM UC:**
+   * **Buscador en tiempo real:** Filtra simultáneamente por título, área temática y descripción.
+   * **Filtros por Categoría (Chips):** Proyectos, Capacidades I+D, Integrantes, Publicaciones y Actividades.
+   * **Relaciones entre elementos:** Navegación vinculada hacia otros proyectos o capacidades asociadas.
 
-1. **Clonar el repositorio:**
-   ```bash
-   git clone https://github.com/98cristobal-v2/DSY1105-009V-cristobal-onate.git
-   cd DSY1105-009V-cristobal-onate/evaluaciones/"EP2 8%"/CIMUCmovil2
-   ```
+3. **Recursos Nativos del Dispositivo:**
+   * **📷 Cámara Nativa:** Integración mediante el contrato `ActivityResultContracts.TakePicturePreview` para captura rápida desde la ficha técnica.
+   * **📤 Compartir Nativo (`Intent.ACTION_SEND`):** Permite enviar la información técnica del proyecto a aplicaciones externas instaladas en el dispositivo (WhatsApp, Correo, etc.).
 
-2. **Abrir en Android Studio:**
-   Abre Android Studio y selecciona **Open**, luego navega hasta la carpeta del proyecto.
+4. **Persistencia Local con Room Database (SQLite):**
+   * Persistencia 100% offline mediante `CimDatabase`.
+   * Tablas normalizadas para contenidos (`cim_contents`) y usuarios registrados (`users`).
+   * Carga inicial automática de datos de demostración y usuario administrador maestro.
 
-3. **Sincronizar Gradle:**
-   Permite que Android Studio descargue todas las dependencias necesarias (`Sync Project with Gradle Files`).
-
-4. **Ejecutar la aplicación:**
-   * Conecta un dispositivo físico con *Depuración USB* activada o inicia un Emulador (AVD).
-   * Haz clic en **Run 'app'** (`Shift + F10`).
-
----
-
-## 📄 Presentación EP2
-
-Dentro del proyecto se incluye una presentación interactiva en formato HTML para la evaluación:
-* Archivo: `docs/presentation.html` (o la ruta correspondiente en el proyecto).
-* Puedes abrir este archivo en cualquier navegador web para visualizar el soporte visual de la entrega EP2.
+5. **Diseño y Animaciones Fluidas:**
+   * Implementado íntegramente con **Material 3**.
+   * Transiciones y animaciones fluidas con `AnimatedContent` entre pantallas (Listado, Detalle, Formularios, Login).
 
 ---
 
-## 🧪 Pruebas (Tests)
+## 🔑 Credenciales de Acceso
 
-El proyecto incluye *stubs* y estructuras base para la ejecución de pruebas:
-* **Pruebas unitarias:** Ubicadas en `app/src/test/`
-* **Pruebas de UI / Instrumentadas:** Ubicadas en `app/src/androidTest/`
+* **Administrador:**
+  * **Usuario:** `admin`
+  * **Contraseña:** `admin123`
+  * **Rol:** Administrador con permisos de escritura y gestión de usuarios.
 
-Para ejecutar las pruebas unitarias desde la terminal:
-```bash
-./gradlew test
-```
+* **Usuario Común:**
+  * Puedes registrar una cuenta nueva tocando **"Regístrate aquí"** en la pantalla de inicio de sesión.
+  * Por defecto se asigna el rol `USER` (solo consulta e interacción).
 
 ---
 
-## ✒️ Autor
-* **CIM UC** - Entrega EP2 - 2026
+## 🛠️ Stack Tecnológico y Arquitectura (MVVM)
+
+* **Lenguaje:** Kotlin
+* **UI Toolkit:** Jetpack Compose + Material 3
+* **Arquitectura:** Model-View-ViewModel (MVVM) con separación estricta de capas:
+  * `model/`: Entidades de dominio (`CimContent`, `User`, `ContentType`).
+  * `data/`: Base de datos SQLite Room (`CimDatabase`), DAOs (`CimDao`, `UserDao`), Entidades (`CimEntity`, `UserEntity`) y Repositorios (`CimRepository`, `UserRepository`).
+  * `viewmodel/`: `CimViewModel` con `StateFlow` reactivo para desacoplar completamente la lógica de validación del estado visual.
+  * `ui/`: Pantallas (`CimApp`, `AuthScreens`, `UserManagerDialog`) y componentes temáticos (`theme/`).
+* **Pruebas Unitarias:** JUnit 4 en `app/src/test/` validando lógica de dominio y mapeo de entidades.
+
+---
+
+## 💻 Instrucciones para Ejecutar el Proyecto
+
+1. **Requisitos Previos:**
+   * Android Studio Jellyfish / Koala / Ladybug o superior.
+   * JDK 11 o JDK 17 (configurado como Gradle JDK).
+   * Emulador Android o dispositivo físico con Android 7.0 (API 24) o superior.
+
+2. **Pasos:**
+   1. Clonar el repositorio:
+      ```bash
+      git clone <URL_DEL_REPOSITORIO>
+      ```
+   2. Abrir la carpeta del proyecto en Android Studio.
+   3. Esperar la sincronización de Gradle (`Sync Project with Gradle Files`).
+   4. Seleccionar el dispositivo o emulador y presionar **Run 'app'** (`Shift + F10`).
