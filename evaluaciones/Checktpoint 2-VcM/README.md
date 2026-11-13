@@ -10,7 +10,7 @@ Aplicación móvil nativa Android desarrollada en **Kotlin** y **Jetpack Compose
 
 **Asignatura:** Desarrollo de Aplicaciones Móviles (`DSY1105`)  
 **Institución:** Duoc UC  
-**Evaluación:** Evaluación Parcial 2 (8%)  
+**Evaluación:** Checktpoint 2   
 
 ---
 
