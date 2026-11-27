@@ -1,6 +1,6 @@
-# CIM UC Móvil - Innovación en Madera
+# 🌲 CIM UC Móvil - Documentación Técnica y Manual del Proyecto
 
-Aplicación móvil nativa Android desarrollada en **Kotlin** y **Jetpack Compose** para la gestión, difusión y vinculación del Centro de Innovación en Madera (CIM UC). Permite la consulta y administración de proyectos de edificación sustentable, capacidades de I+D, investigadores y publicaciones técnicas, integrando consumo de **API REST remota (Retrofit)**, persistencia local en **Room Database**, recursos nativos del dispositivo y control de accesos por roles (RBAC).
+Aplicación móvil nativa en Android desarrollada en **Kotlin** y **Jetpack Compose** para la gestión, difusión y vinculación tecnológica del **Centro de Innovación en Madera (CIM UC)**. Permite la consulta y administración de proyectos de edificación sustentable, capacidades de I+D y publicaciones técnicas, integrando consumo de **Microservicios propios en Spring Boot**, **APIs REST externas**, persistencia local en **Room Database (Offline-First)**, recursos nativos del dispositivo y control de accesos por roles (**RBAC**).
 
 ---
 
@@ -14,37 +14,69 @@ Aplicación móvil nativa Android desarrollada en **Kotlin** y **Jetpack Compose
 
 ---
 
-## 🚀 Funcionalidades Principales
+## 📑 Índice de Documentación Técnica
+1. [Resumen y Alcance del Proyecto](#-resumen-y-alcance-del-proyecto)
+2. [Arquitectura y Patrón MVVM](#-arquitectura-y-patrón-mvvm)
+3. [Funcionalidades Principales y Rúbrica EP4](#-funcionalidades-principales-y-rúbrica-ep4)
+   * 3.1. Consumo de API Externa y Microservicio Spring Boot
+   * 3.2. Control de Acceso por Roles (RBAC)
+   * 3.3. Persistencia Local con Room Database
+   * 3.4. Integración de Recursos Nativos
+   * 3.5. Pruebas Unitarias (JUnit 4)
+   * 3.6. Firma Digital y APK Release
+4. [Credenciales de Acceso Preconfiguradas](#-credenciales-de-acceso-preconfiguradas)
+5. [Instrucciones de Ejecución y Despliegue](#-instrucciones-de-ejecución-y-despliegue)
 
-1. **🌐 Consumo e Integración de API REST (Retrofit 2 + Gson):**
-   * **Sincronización de Datos Remotos:** Integración mediante `Retrofit` y `GsonConverterFactory` para consumir servicios web externos (`CimApiService`).
-   * **Mapeo DTO a Dominio:** Conversión dinámica de objetos de transferencia de datos (`CimRemoteDto`) hacia entidades de dominio local (`CimContent`).
-   * **Persistencia Directa:** Al presionar el botón de sincronización remota (`🌐`) en la barra superior, los datos obtenidos de la API se insertan automáticamente en la base de datos local Room.
-   * **Feedback Visual e Indicadores:** Incluye un diálogo modal informativo con los elementos importados, indicador de carga (`CircularProgressIndicator`) y captura de errores de conexión de red (`remoteError`).
+---
 
-2. **🔐 Autenticación y Control de Acceso por Roles (RBAC):**
-   * **Inicio de Sesión y Registro de Usuarios:** Validaciones en tiempo real (campos requeridos, longitud mínima de usuario/contraseña y coincidencia de confirmación).
-   * **Rol Administrador (`ADMIN`):** Permisos completos para crear (`+`), editar (`✏️`) y eliminar (`🗑️`) contenidos del catálogo. Acceso al panel de **Gestión de Usuarios** (`👥`) para crear, modificar y eliminar cuentas del sistema.
-   * **Rol Usuario Común (`USER`):** Perfil de consulta e interacción. Permite buscar, filtrar por áreas temáticas, visualizar detalles y compartir iniciativas.
-   * **Cerrar Sesión:** Acción accesible desde el menú superior (`🚪`) para alternar entre cuentas de manera rápida.
+## 🏛️ Resumen y Alcance del Proyecto
+**CIM UC Móvil** es una solución tecnológica diseñada para dar a conocer los avances en construcción en madera masiva (CLT, Timber Frame), laboratorios de ensayos e iniciativas de investigación del Centro de Innovación en Madera. La aplicación implementa una arquitectura robusta y moderna basada en componentes de Jetpack, garantizando alta escalabilidad, mantenimiento limpio y un diseño UI/UX responsivo con Material 3.
 
-3. **📚 Catálogo Interactivo de Iniciativas CIM UC:**
-   * **Buscador en Tiempo Real:** Filtrado simultáneo por título, descripción y área temática.
-   * **Filtros por Categoría (Chips):** Selección por Proyectos, Capacidades I+D, Integrantes, Publicaciones y Actividades.
-   * **Navegación Dinámica:** Transición fluida entre el catálogo general y la vista en detalle.
+---
 
-4. **📱 Recursos Nativos e Interoperabilidad del Dispositivo:**
-   * **📷 Cámara Nativa:** Captura fotográfica desde la ficha técnica utilizando el contrato `ActivityResultContracts.TakePicturePreview`.
-   * **📤 Compartir Nativo (`Intent.ACTION_SEND`):** Difusión de la información técnica del proyecto a aplicaciones de terceros (WhatsApp, Correo, etc.).
+## 🛠️ Arquitectura y Patrón MVVM
+El proyecto sigue rigurosamente el patrón arquitectónico **MVVM (Model-View-ViewModel)** recomendado por Android, asegurando la separación de incumbencias:
+* **Capa de Presentación (UI):** Pantallas construidas en **Jetpack Compose** (`CimApp`, pantallas de autenticación, catálogo, fichas de detalle y diálogos modales). El estado reactivo se gestiona mediante `StateFlow` y `Coroutines`.
+* **Capa de Dominio / Lógica:** `CimViewModel` centraliza las reglas de negocio, validaciones de formularios, autenticación y peticiones de red.
+* **Capa de Datos (Data):** 
+  * Repositorios (`CimRepository`, `UserRepository`) como única fuente de verdad.
+  * Base de datos local **Room Database (SQLite)** con DAOs normalizados (`CimDao`, `UserDao`).
+  * Servicios remotos de red (**Retrofit 2 + Gson**) para comunicación HTTP con el backend.
 
-5. **💾 Persistencia Local con Room Database (SQLite):**
-   * Arquitectura offline-first mediante `CimDatabase`.
-   * Tablas normalizadas: `cim_contents` (iniciativas/publicaciones) and `users` (usuarios registrados).
-   * Precarga automática de contenidos iniciales y del usuario Administrador maestro al iniciar por primera vez.
+---
 
-6. **🎨 Interfaz Moderna y Animaciones Fluidas:**
-   * Diseño 100% responsivo con **Material 3**.
-   * Animaciones con `AnimatedContent` entre login, catálogo, formularios y detalles.
+## 🚀 Funcionalidades Principales y Rúbrica EP4
+
+### 1. 🌐 Consumo de Microservicios Propios y APIs Externas
+La aplicación integra conectividad HTTP avanzada mediante dos servicios Retrofit:
+* **Microservicio Propio (Spring Boot):** Conectado al backend local (`http://10.0.2.2:8080/api/cim/proyectos`) para obtener proyectos de innovación en madera.
+* **API Externa Pública:** Conectada a servicios externos en internet (`https://jsonplaceholder.typicode.com/posts`) para posts de respaldo.
+* **Sincronización Offline-First:** Al pulsar el botón de sincronización `🌐` (exclusivo para el rol `ADMIN`), la app consume ambas fuentes, las etiqueta visualmente como `[Microservicio]` o `[API Externa]` y las almacena en la base de datos local Room.
+
+### 2. 🔐 Control de Acceso por Roles (RBAC)
+Sistema de seguridad y permisos basado en roles de usuario almacenados en base de datos:
+* **Administrador (`ADMIN`):** Control total. Puede sincronizar los servicios remotos (`🌐`), crear (`+`), editar (`✏️`) y eliminar (`🗑️`) iniciativas del catálogo, y acceder al panel de gestión de cuentas (`👥`).
+* **Usuario Común (`USER`):** Perfil de consulta. Permite explorar el catálogo, buscar en tiempo real, filtrar por categorías (Chips), visualizar fichas de detalle y compartir información.
+
+### 3. 💾 Persistencia Local con Room Database
+* Base de datos local `cim_database` con tablas relacionales `cim_contents` y `users`.
+* Precarga automática de contenidos institucionales del CIM UC y de la cuenta de Administrador maestro al iniciar por primera vez.
+
+### 4. 📱 Recursos Nativos del Dispositivo
+* **Cámara Nativa:** Captura de fotografías desde la ficha técnica utilizando el contrato `ActivityResultContracts.TakePicturePreview`.
+* **Compartir Información (`Intent.ACTION_SEND`):** Difusión de fichas técnicas de proyectos a aplicaciones externas de mensajería y correo.
+
+### 5. 🧪 Pruebas Unitarias (JUnit 4)
+El proyecto incluye un conjunto completo de pruebas unitarias (`8 passed`) que validan la lógica de dominio, el comportamiento de los roles de usuario, la conversión de entidades y los DTOs de red:
+* `UserDomainTest`: Validación de roles (`isAdmin`) y mapeo de entidades.
+* `CimApiTest`: Pruebas de propiedades de DTOs remotos.
+* `CimContentTest`: Verificación de modelos de dominio y relaciones de contenido.
+* Se pueden ejecutar mediante el script automatizado **`run_tests.bat`**.
+
+### 6. 📦 Firma Digital y Generación de APK Release
+* Configuración de un keystore privado `release.jks` en el archivo `app/build.gradle.kts` dentro del bloque `signingConfigs`.
+* Generación del ejecutable firmado de producción:
+  `app/build/outputs/apk/release/app-release.apk`.
 
 ---
 
@@ -53,57 +85,36 @@ Aplicación móvil nativa Android desarrollada en **Kotlin** y **Jetpack Compose
 * **Administrador Maestro:**
   * **Usuario:** `admin`
   * **Contraseña:** `admin123`
-  * **Rol:** Administrador (`ADMIN`) con permisos de escritura, eliminación y gestión de usuarios.
+  * **Rol:** Administrador (`ADMIN`) con permisos de escritura, eliminación, sincronización y gestión de usuarios.
 
-* **Usuario Común:**
-  * Se puede crear un nuevo usuario desde la pantalla de inicio de sesión haciendo clic en **"Regístrate aquí"**.
-  * Asignación automática del rol `USER` (solo lectura/interacción).
-
----
-
-## 🛠️ Stack Tecnológico y Arquitectura (MVVM)
-
-El proyecto sigue una arquitectura **MVVM (Model-View-ViewModel)** reactiva con separación clara de capas:
-
-* **Lenguaje:** Kotlin
-* **UI Toolkit:** Jetpack Compose + Material 3
-* **Conectividad REST:** Retrofit 2.x + Gson Converter
-* **Persistencia:** Room Database (SQLite) + KSP (Kotlin Symbol Processing)
-* **Gestión de Estado:** `CimViewModel` con `StateFlow` y `Coroutines`
-* **Capa de Datos:**
-  * `data/remote/`: `CimApiService`, `CimRemoteDto` (Consumo HTTP REST).
-  * `data/`: `CimDatabase`, DAOs (`CimDao`, `UserDao`), Entidades (`CimEntity`, `UserEntity`), Repositorios (`CimRepository`, `UserRepository`).
-* **Capa de Dominio / Modelos:** `CimContent`, `User`, `ContentType`.
-* **Capa de Presentación (UI):** `CimApp`, `AuthScreens`, `UserManagerDialog`, `theme/`.
-* **Pruebas Unitarias (JUnit 4):**
-  * `UserDomainTest`: Pruebas de modelos de dominio y mapeo de entidades de usuario.
-  * `CimApiTest`: Pruebas unitarias de consumo e instanciación de DTOs de API REST.
+* **Nuevo Usuario Común:**
+  * Puede registrarse directamente desde la pantalla de inicio haciendo clic en **"Regístrate aquí"** (asignación automática de rol `USER`).
 
 ---
 
-## 🌐 Configuración de la API REST
+## 💻 Instrucciones de Ejecución y Despliegue
 
-La aplicación está configurada para conectarse a un endpoint API REST a través de `CimApiService`:
-* **Base URL:** `http://10.0.2.2:8080/api/cim/` (IP de loopback del emulador de Android hacia la máquina anfitriona).
-* **Endpoint:** `GET posts` (`List<CimRemoteDto>`).
-* **Manejo de Errores:** En caso de falta de conectividad o fallo en el servidor, la aplicación captura la excepción y notifica mediante la interfaz sin interrumpir la experiencia del usuario ni afectar los datos locales en Room.
+### Requisitos Previos:
+* Android Studio Jellyfish / Koala / Ladybug o superior.
+* JDK 11 o JDK 17 configurado como Gradle JDK.
+* Java instalado para ejecutar el microservicio de Spring Boot.
 
----
+### Pasos para Ejecutar el Proyecto:
 
-## 💻 Instrucciones para Ejecutar el Proyecto
+1. **Ejecutar el Microservicio Backend (Spring Boot):**
+   * Ve a la carpeta `demo/` y haz doble clic en el archivo **`run_backend.bat`** (o ejecuta `.\gradlew bootRun` en la terminal dentro de `demo/`). Esto levantará el servidor en el puerto `8080`.
 
-1. **Requisitos Previos:**
-   * Android Studio Jellyfish / Koala / Ladybug o superior.
-   * JDK 11 o JDK 17 (configurado como Gradle JDK).
-   * Emulador de Android Studio o dispositivo físico con Android 7.0 (API 24) o superior.
+2. **Ejecutar la Aplicación en Android Studio:**
+   * Abre la carpeta `CIMUCmovil2/` en Android Studio.
+   * Sincroniza Gradle (`Sync Project with Gradle Files`).
+   * Selecciona un emulador o dispositivo físico y presiona **Run 'app'** (`Shift + F10`).
 
-2. **Pasos para Ejecución:**
-   1. Clonar el repositorio:
-      ```bash
-      git clone <URL_DEL_REPOSITORIO>
-      ```
-   2. Abrir la carpeta `CIMUCmovil2` en Android Studio.
-   3. Sincronizar Gradle (`Sync Project with Gradle Files`).
-   4. Ejecutar las pruebas unitarias (opcional):
-      * Clic derecho en `app/src/test/java` -> **Run 'Tests in 'cl.duoc.cimucmovil''**.
-   5. Seleccionar un emulador o dispositivo físico y presionar **Run 'app'** (`Shift + F10`).
+3. **Ejecutar las Pruebas Unitarias:**
+   * Haz doble clic en el archivo **`run_tests.bat`** en la raíz del proyecto para verificar que las 8 pruebas unitarias pasen exitosamente.
+
+4. **Generar APK Firmado (Modo Release):**
+   * En la terminal del proyecto, ejecuta:
+     ```bash
+     .\gradlew app:assembleRelease
+     ```
+   * El APK firmado quedará listo en `app/build/outputs/apk/release/app-release.apk`.
