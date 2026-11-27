@@ -23,6 +23,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
+import kotlinx.coroutines.delay
 import cl.duoc.cimucmovil.model.CimContent
 import cl.duoc.cimucmovil.model.ContentType
 import cl.duoc.cimucmovil.ui.admin.UserManagerDialog
@@ -120,10 +122,10 @@ fun CimApp(viewModel: CimViewModel = androidx.lifecycle.viewmodel.compose.viewMo
                     }
                 },
                 actions = {
-                    IconButton(onClick = { viewModel.fetchRemoteData() }) {
-                        Text("🌐", style = MaterialTheme.typography.titleMedium)
-                    }
-                    if (uiState.currentUser!!.isAdmin) {
+                    if (uiState.currentUser?.isAdmin == true) {
+                        IconButton(onClick = { viewModel.fetchRemoteData() }) {
+                            Text("🌐", style = MaterialTheme.typography.titleMedium)
+                        }
                         IconButton(onClick = { viewModel.setManagingUsers(true) }) {
                             Text("👥", style = MaterialTheme.typography.titleMedium)
                         }
@@ -156,17 +158,44 @@ fun CimApp(viewModel: CimViewModel = androidx.lifecycle.viewmodel.compose.viewMo
                 .padding(paddingValues)
         ) {
             uiState.operationMessage?.let { msg ->
-                Snackbar(
+                LaunchedEffect(msg) {
+                    delay(4000)
+                    viewModel.clearMessage()
+                }
+                Surface(
+                    shape = RoundedCornerShape(12.dp),
+                    color = MaterialTheme.colorScheme.inverseSurface,
+                    contentColor = MaterialTheme.colorScheme.inverseOnSurface,
+                    shadowElevation = 10.dp,
                     modifier = Modifier
                         .align(Alignment.BottomCenter)
-                        .padding(16.dp),
-                    action = {
-                        TextButton(onClick = { viewModel.clearMessage() }) {
-                            Text("OK", color = MaterialTheme.colorScheme.inversePrimary)
+                        .padding(bottom = 24.dp, start = 16.dp, end = 16.dp)
+                        .zIndex(9999f)
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .padding(horizontal = 16.dp, vertical = 10.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = msg,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.inverseOnSurface,
+                            modifier = Modifier.weight(1f)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        IconButton(
+                            onClick = { viewModel.clearMessage() },
+                            modifier = Modifier.size(28.dp)
+                        ) {
+                            Text(
+                                text = "✕",
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.inverseOnSurface
+                            )
                         }
                     }
-                ) {
-                    Text(msg)
                 }
             }
 

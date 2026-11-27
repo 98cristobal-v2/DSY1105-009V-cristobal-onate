@@ -393,25 +393,65 @@ class CimViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     private val apiService = cl.duoc.cimucmovil.data.remote.CimApiService.create()
+    private val externalApiService = cl.duoc.cimucmovil.data.remote.ExternalApiService.create()
 
     fun fetchRemoteData() {
+        if (_uiState.value.currentUser?.isAdmin != true) {
+            _uiState.update { it.copy(operationMessage = "Solo el Administrador puede sincronizar datos con la API REST") }
+            return
+        }
         viewModelScope.launch {
             _uiState.update { it.copy(isLoadingRemote = true, remoteError = null) }
             try {
-                val dtos = apiService.getRemoteContents()
-                val domainItems = dtos.take(5).map { dto ->
+                // 1. Conexión con microservicio propio (Spring Boot local)
+                val proyectosList = try { apiService.getPosts() } catch (_: Exception) { emptyList() }
+                // 2. Consumo de API externa pública (JSONPlaceholder)
+                val externalList = try { externalApiService.getExternalPosts() } catch (_: Exception) { emptyList() }
+
+                if (proyectosList.isEmpty() && externalList.isEmpty()) {
+                    throw Exception("No se pudieron obtener datos ni del microservicio ni de la API externa.")
+                }
+
+                // Limitamos estrictamente a 3 de cada uno para mantener el catálogo limpio y rápido
+                val restrictedProyectos = proyectosList.take(3)
+                val restrictedExternal = externalList.take(3)
+
+                val domainProyectos = restrictedProyectos.map { dto ->
+                    val safeId = dto.id ?: (1..9999).random()
+                    val rawTitle = dto.title?.takeIf { it.isNotBlank() } ?: "Proyecto CIM UC"
+                    val formattedTitle = if (rawTitle.startsWith("[Microservicio]")) rawTitle else "[Microservicio] $rawTitle"
                     CimContent(
-                        id = "api_${dto.id}",
-                        type = if (dto.id % 2 == 0) ContentType.PUBLICACION else ContentType.PROYECTO,
-                        title = "[API] ${dto.title.replaceFirstChar { it.uppercase() }}",
-                        shortDescription = dto.body ?: "Iniciativa de innovación en madera masiva sincronizada desde API REST.",
-                        areaTematica = "Innovación Tecnológica (Remoto)",
-                        year = "2024",
-                        status = "Activo (Sincronizado)",
-                        associatedName = "API REST CIM UC",
+                        id = "proj_$safeId",
+                        type = ContentType.PROYECTO,
+                        title = formattedTitle,
+                        shortDescription = dto.body?.takeIf { it.isNotBlank() } ?: "Proyecto sincronizado desde el microservicio propio en Spring Boot.",
+                        areaTematica = "Innovación en Madera",
+                        year = "2025",
+                        status = "En Ejecución",
+                        associatedName = "Microservicio CIM UC (Spring Boot)",
                         contactEmail = "contacto.cim@uc.cl"
                     )
                 }
+
+                val domainExternal = restrictedExternal.map { dto ->
+                    val safeId = dto.id ?: (1..9999).random()
+                    val rawTitle = dto.title?.takeIf { it.isNotBlank() } ?: "Publicación Externa"
+                    val formattedTitle = if (rawTitle.startsWith("[API Externa]")) rawTitle else "[API Externa] $rawTitle"
+                    CimContent(
+                        id = "ext_$safeId",
+                        type = ContentType.PUBLICACION,
+                        title = formattedTitle,
+                        shortDescription = dto.body?.takeIf { it.isNotBlank() } ?: "Publicación obtenida desde API externa pública (JSONPlaceholder).",
+                        areaTematica = "Tecnología Global",
+                        year = "2025",
+                        status = "Activo (Remoto)",
+                        associatedName = "API Externa (JSONPlaceholder)",
+                        contactEmail = "contacto.cim@uc.cl"
+                    )
+                }
+
+                val domainItems = domainProyectos + domainExternal
+                val limitedDtos = restrictedProyectos + restrictedExternal
 
                 for (item in domainItems) {
                     repository.insert(item)
@@ -421,8 +461,8 @@ class CimViewModel(application: Application) : AndroidViewModel(application) {
                     it.copy(
                         isLoadingRemote = false, 
                         showApiDialog = true,
-                        remoteItems = dtos,
-                        operationMessage = "✓ ¡Sincronización exitosa! Se agregaron ${domainItems.size} proyectos desde la API."
+                        remoteItems = limitedDtos,
+                        operationMessage = "✓ Sincronización exitosa: ${domainProyectos.size} del Microservicio y ${domainExternal.size} de la API Externa."
                     ) 
                 }
             } catch (e: Exception) {

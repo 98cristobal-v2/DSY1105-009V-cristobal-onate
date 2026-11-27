@@ -9,34 +9,25 @@ import java.util.List;
 @RequestMapping("/api/cim")
 public class ProyectoController {
 
-    @GetMapping("/proyectos")
-    public List<String> listarProyectos() {
-        return List.of(
-            "Edificio Sustentable en CLT - CIM UC",
-            "Investigación de Madera Masiva",
-            "Laboratorio de Ensayos y Certificación"
-        );
-    }
-
     @GetMapping("/posts")
     public List<CimRemotePost> listarPosts() {
         return List.of(
             new CimRemotePost(
                 1,
-                "Edificio Sustentable en CLT - CIM UC",
-                "Diseño y construcción de un edificio sustentable utilizando madera contralaminada (CLT).",
+                "Innovación Tecnológica en Madera Masiva",
+                "Nuevos avances en ingeniería de uniones y diseño sismorresistente para edificios en altura.",
                 1
             ),
             new CimRemotePost(
                 2,
-                "Investigación de Madera Masiva",
-                "Investigación aplicada a soluciones estructurales y constructivas en madera masiva.",
+                "Capacitación en Construcción Sustentable",
+                "Programa de formación técnica para profesionales y constructores en sistemas industrializados.",
                 1
             ),
             new CimRemotePost(
                 3,
-                "Laboratorio de Ensayos y Certificación",
-                "Ensayos y certificación de productos y sistemas constructivos de madera.",
+                "Transferencia Tecnológica I+D+i",
+                "Vinculación con la industria forestal y de la construcción para la adopción de estándares BIM y madera.",
                 1
             )
         );
