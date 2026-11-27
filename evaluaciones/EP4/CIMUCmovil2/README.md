@@ -49,7 +49,7 @@ El proyecto sigue rigurosamente el patrón arquitectónico **MVVM (Model-View-Vi
 
 ### 1. 🌐 Consumo de Microservicios Propios y APIs Externas
 La aplicación integra conectividad HTTP avanzada mediante dos servicios Retrofit:
-* **Microservicio Propio (Spring Boot):** Conectado al backend local (`http://10.0.2.2:8080/api/cim/proyectos`) para obtener proyectos de innovación en madera.
+* **Microservicio Propio (Spring Boot):** Conectado al backend local (`http://10.0.2.2:8080/api/cim/posts`) para obtener post de innovación en madera.
 * **API Externa Pública:** Conectada a servicios externos en internet (`https://jsonplaceholder.typicode.com/posts`) para posts de respaldo.
 * **Sincronización Offline-First:** Al pulsar el botón de sincronización `🌐` (exclusivo para el rol `ADMIN`), la app consume ambas fuentes, las etiqueta visualmente como `[Microservicio]` o `[API Externa]` y las almacena en la base de datos local Room.
 
@@ -65,7 +65,7 @@ Sistema de seguridad y permisos basado en roles de usuario almacenados en base d
 ### 4. 📱 Recursos Nativos del Dispositivo
 * **Cámara Nativa:** Captura de fotografías desde la ficha técnica utilizando el contrato `ActivityResultContracts.TakePicturePreview`.
 * **Compartir Información (`Intent.ACTION_SEND`):** Difusión de fichas técnicas de proyectos a aplicaciones externas de mensajería y correo.
-
+* **Intents Nativos de Correo (`Intent.ACTION_SENDTO`):** Integración con la aplicación de correo nativa del dispositivo para gestionar solicitudes de contacto y colaboración directamente desde la ficha técnica de cada proyecto.
 ### 5. 🧪 Pruebas Unitarias (JUnit 4)
 El proyecto incluye un conjunto completo de pruebas unitarias (`8 passed`) que validan la lógica de dominio, el comportamiento de los roles de usuario, la conversión de entidades y los DTOs de red:
 * `UserDomainTest`: Validación de roles (`isAdmin`) y mapeo de entidades.
