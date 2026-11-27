@@ -762,9 +762,18 @@ fun CimDetailScreen(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     modifier = Modifier.fillMaxWidth()
                 ) {
+                    val localCtx = LocalContext.current
                     Button(
                         onClick = {
-                            simulationMessage = "✓ Solicitud de contacto registrada para: ${content.title}"
+                            val emailIntent = Intent(Intent.ACTION_SENDTO).apply {
+                                data = android.net.Uri.parse("mailto:${content.contactEmail ?: "contacto.cim@uc.cl"}")
+                                putExtra(Intent.EXTRA_SUBJECT, "Consulta sobre iniciativa: ${content.title}")
+                            }
+                            try {
+                                localCtx.startActivity(emailIntent)
+                            } catch (_: Exception) {
+                                // Fallback
+                            }
                         },
                         modifier = Modifier.weight(1f)
                     ) {
